@@ -1,20 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Page name</title>
+    <title>Train Schedule</title>
     <!--requires the reset css to be in folder- not necess if bootstrap  -->
-    <link rel="stylesheet" href="assets/css/reset.css" type="text/css">
+    <!-- <link rel="stylesheet" href="assets/css/reset.css" type="text/css"> -->
     <!--to use bootstrap 4.0  -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!--font references -->
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
     <!--references your own css sheet  -->
-    <link rel="stylesheet" href="assets/css/style.css" type = "text/css">
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css">
 
 </head>
 
 <body>
+    <div id=Headercontainer class="container darkestcontainer">
+        <img src="assets/images/trainicon.png" alt="trainIcon" />
+        <h1>Train scheduler</h1>
+        <h2>"Keeping the line running smoothly - in real-time"</h2>
+    </div>
+    <br>
+
+    <table class="table container">
+        <div class="darkestcontainer tabletitle">
+            <h2>Current train schedule: </h2>
+        </div>
+        <thead class="darkcontainer">
+
+            <tr>
+                <th scope="col">Train name</th>
+                <th scope="col">Destination</th>
+                <th scope="col">Frequency (min)</th>
+                <th scope="col">Next Arrival</th>
+                <th scope="col">Minutes Away</th>
+            </tr>
+        </thead>
+        <tbody id="tablebody">
+            <!--This is where the data will go -->
+        </tbody>
+    </table>
+
+    <div id="inputcontainer" class="container lightcontainer">
+        <div id="inputheader" class="container darkestcontainer">
+            <h2>Create new train</h2>
+        </div>
+
+        <div class="input-group mb-3">
+            <!--Train name input -->
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Train name</span>
+                <input type="text" class="form-control" id="trainname" />
+            </div>
+        </div>
+            <!--Destination input -->
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Destination</span>
+                <input type="text" class="form-control" id="destination" />
+            </div>
+        </div>
+            <!--First train time input -->
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">First train time HH:mm (military time)</span>
+                <input type="text" class="form-control" id="firsttraintime" />
+            </div>
+        </div>
+            <!--frequency input -->
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon3">Frequency (min)</span>
+                <input type="text" class="form-control" id="frequency" />
+            </div>
+        </div>
+
+        <input id="submitbutton" class="btn btn-primary" type="submit" value="Submit">
+
+
+    </div>
 
 
 
@@ -22,16 +91,14 @@
 
 
 
+    <!--loads jquery  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 
+    <!--for firebase -->
+    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
 
-<!--loads jquery  -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
-
-<!--for firebase -->
-<script src="https://www.gstatic.com/firebasejs/3.7.0/firebase.js"></script>
-
-<!--references your script file  -->
-<script src="assets/javascript/script.js"></script>
+    <!--references your script file  -->
+    <script src="assets/javascript/javascript.js"></script>
 </body>
 
 </html>
