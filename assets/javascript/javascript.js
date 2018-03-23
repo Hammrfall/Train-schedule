@@ -1,15 +1,10 @@
 var currentTrain = {
-    trainName: "orient express",
-    destination: "Istanbul",
-    firstTrainTime: "10:00",
-    frequency: 150
+    index: "",
+    trainName: "",
+    destination: "",
+    firstTrainTime: "",
+    frequency: ""
 }
-
-$(document).ready(function () {
-
-
-});
-
 
 var config = {
     apiKey: "AIzaSyChFkhV6bhl9IMX-VXY5fkwGbg8_3Jts4s",
@@ -20,31 +15,31 @@ var config = {
     messagingSenderId: "755536802556"
 };
 firebase.initializeApp(config);
+const database = firebase.database;
+const parentObject = database().ref().child('Trains');
+const childObjects = parentObject.child('Train');
 
-var database = firebase.database;
-addRow(currentTrain);
+$(document).ready(function () {
+
+});
 
 function addRow(rowData) {
     var tableBody = $("#tablebody");
     var newRow = $("<tr>");
     $(newRow).addClass("lightestcontainer")
-
-    var newCol1 = $("<th>");
-    $(newCol1).attr("scope", "col");
-    $(newCol1).text(rowData.trainName);
-    $(newRow).append(newCol1);
-
-    var newCol2 = $("<th>");
-    $(newCol2).attr("scope", "col");
-    $(newCol2).text(rowData.destination);
-    $(newRow).append(newCol2);
-
-    var newCol3 = $("<th>");
-    $(newCol3).attr("scope", "col");
-    $(newCol3).text(rowData.frequency);
-    $(newRow).append(newCol3);
+    $(newRow).attr("data-index", rowData.index);
+    $(newRow).append(addColumn(rowData.trainName));
+    $(newRow).append(addColumn (rowData.destination));
+    $(newRow).append(addColumn(rowData.frequency));
 
     $(tablebody).append(newRow);
+}
+
+function addColumn(value) {
+    var newCol = $("<th>");
+    $(newCol).attr("scope", "col");
+    $(newCol).text(value);
+    return newCol;
 }
 
 
@@ -57,7 +52,21 @@ $("#submitbutton").click ("click", function() {
     currentTrain.frequency = $("#frequency").val().trim();
     //TODO: send new values to database
     // let newTrainRef = database.
-   
+   parentObject.push(currentTrain)
     // newTrainRef.setValue(obj.toDictionary())
 
+});
+
+// const parentObject = firebase.database().ref().child('Trains');
+
+
+
+parentObject.on("child_added", snapshot => {
+    console.log(snapshot);
+    currentTrain.index = snapshot.key
+    currentTrain.trainName = snapshot.val().trainName;
+    currentTrain.destination = snapshot.val().destination;
+    currentTrain.firstTrainTime = snapshot.val().firstTrainTime
+    currentTrain.frequency = snapshot.val().frequency
+    addRow(currentTrain);
 });
