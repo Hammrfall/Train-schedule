@@ -48,26 +48,22 @@ function validData(data) {
     var thirdString = militaryTime.slice(-2);
     if (data.trainName == "") {
         window.alert("You must have a name for the train");
-        $("#trainname").val("");
-        $("#trainname").focus();
+        $("#trainname").val("").focus();
+        // $("#trainname").focus();
         returnValue = false;
     } else if (data.destination == "") {
         window.alert("You must have a train destination");
-        $("destination").val ("");
-        $("destination").focus();
+        $("#destination").val("").focus();
         returnValue = false;
     } else if (isMilitaryTime(data.firstTrainTime) == false) {
         window.alert("You must use valid military time format HH:mm");
-        $("#firsttraintime").val("");
-        $("#firsttraintime").focus();
+        $("#firsttraintime").val("").focus();
         returnValue = false;
     } else if (isNaN(data.frequency) || data.frequency == "") {
         window.alert("You must input train frequency (in minutes)");
-        $("#frequency").val("");
-        $("#frequency").focus();
+        $("#frequency").val("").focus();
         returnValue = false;
     }
-
     return returnValue;
 }
 
@@ -97,7 +93,6 @@ $("#submitbutton").click("click", function () {
 });
 
 parentObject.on("child_added", snapshot => {
-    console.log(snapshot);
     currentTrain.index = snapshot.key
     currentTrain.trainName = snapshot.val().trainName
     currentTrain.destination = snapshot.val().destination
