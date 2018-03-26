@@ -1,5 +1,6 @@
+//Global objects
 var currentTrain = {index: "",trainName: "",
-    destination: "", firstTrainTime: "", frequency: ""}
+    destination: "", firstTrainTime: "", frequency: ""};
 
 var config = {
     apiKey: "AIzaSyChFkhV6bhl9IMX-VXY5fkwGbg8_3Jts4s",
@@ -9,24 +10,24 @@ var config = {
     storageBucket: "train-schedule-55b13.appspot.com",
     messagingSenderId: "755536802556"
 };
-
-firebase.initializeApp(config); //creates connection to firebase
+//creates connection to firebase and sets parent object
+firebase.initializeApp(config); 
 const database = firebase.database;
 const parentObject = database().ref().child('Trains');
 
 function addRow(rowData) { //retrieves data and adds data rows to display
-    var calcResults = nextArrival(rowData.firstTrainTime, rowData.frequency)
-    var nextTrainTime = moment(calcResults[0]).format("hh:mm a")
-    var minutesUntilArrival = calcResults[1]
+    var calcResults = nextArrival(rowData.firstTrainTime, rowData.frequency);
+    var nextTrainTime = moment(calcResults[0]).format("hh:mm a");
+    var minutesUntilArrival = calcResults[1];
     var tableBody = $("#tablebody");
     var newRow = $("<tr>");
     $(newRow).addClass("lightestcontainer")
-    $(newRow).attr("data-index", rowData.index)
+        .attr("data-index", rowData.index)
         .append(addColumn(rowData.trainName))
         .append(addColumn(rowData.destination))
         .append(addColumn(rowData.frequency))
         .append(addColumn(nextTrainTime))
-        .append(addColumn(minutesUntilArrival))
+        .append(addColumn(minutesUntilArrival));
     $(tablebody).append(newRow);
 }
 
@@ -38,15 +39,15 @@ function addColumn(value) { //called by addRow to populate cells
 
 function nextArrival(firstTrain, frequency) { //does the time calculations
     var nextTrainTime = moment(firstTrain, "HH:mm");
-    checkValue = -1
+    checkValue = -1;
     while (checkValue < 0) {
         checkValue = moment(nextTrainTime).diff(moment(), "minutes");
         if (checkValue < 0) {
             nextTrainTime.add(Number(frequency), 'minutes');
         }
     }
-    var returnobject = [nextTrainTime, checkValue]
-    return returnobject;
+    var returnObject = [nextTrainTime, checkValue];
+    return returnObject;
 }
 
 function validData(data) { //checks input and provides user feedback
@@ -73,8 +74,8 @@ function validData(data) { //checks input and provides user feedback
 
 function isMilitaryTime(time) { //called by validData to validate military time
     var returnValue = true;
-    var hours = time.slice(0, 2)
-    var minutes = time.slice(-2)
+    var hours = time.slice(0, 2);
+    var minutes = time.slice(-2);
     if (time.length !== 5) {
         returnValue = false;
     } else if (time.charAt(2) !== ":") {
@@ -88,20 +89,20 @@ function isMilitaryTime(time) { //called by validData to validate military time
 }
 // Call backs
 $("#submitbutton").click("click", function () {
-    currentTrain.trainName = $("#trainname").val().trim()
-    currentTrain.destination = $("#destination").val().trim()
-    currentTrain.firstTrainTime = $("#firsttraintime").val().trim()
+    currentTrain.trainName = $("#trainname").val().trim();
+    currentTrain.destination = $("#destination").val().trim();
+    currentTrain.firstTrainTime = $("#firsttraintime").val().trim();
     currentTrain.frequency = $("#frequency").val().trim();
     if (validData(currentTrain)) {
-        parentObject.push(currentTrain)
+        parentObject.push(currentTrain);
     }
 });
 
 parentObject.on("child_added", snapshot => {
-    currentTrain.index = snapshot.key
-    currentTrain.trainName = snapshot.val().trainName
-    currentTrain.destination = snapshot.val().destination
-    currentTrain.firstTrainTime = snapshot.val().firstTrainTime
+    currentTrain.index = snapshot.key;
+    currentTrain.trainName = snapshot.val().trainName;
+    currentTrain.destination = snapshot.val().destination;
+    currentTrain.firstTrainTime = snapshot.val().firstTrainTime;
     currentTrain.frequency = snapshot.val().frequency;
     addRow(currentTrain);
 });
