@@ -1,5 +1,5 @@
 //Global objects
-var currentTrain = {index: "",trainName: "",
+var currentTrain = {index: "", trainName: "",
     destination: "", firstTrainTime: "", frequency: ""};
 
 var config = {
@@ -11,7 +11,7 @@ var config = {
     messagingSenderId: "755536802556"
 };
 //creates connection to firebase and sets parent object
-firebase.initializeApp(config); 
+firebase.initializeApp(config);
 const database = firebase.database;
 const parentObject = database().ref().child('Trains');
 
@@ -23,26 +23,33 @@ function addRow(rowData) { //retrieves data and adds data rows to display
     var newRow = $("<tr>");
     $(newRow).addClass("lightestcontainer")
         .attr("data-index", rowData.index)
+        .attr("data-firsttraintime", rowData.firstTrainTime)
+        .attr("data-frequency", rowData.frequency)
         .append(addColumn(rowData.trainName))
         .append(addColumn(rowData.destination))
         .append(addColumn(rowData.frequency))
-        .append(addColumn(nextTrainTime))
-        .append(addColumn(minutesUntilArrival));
+        .append(addColumn(nextTrainTime, "traintime"))
+        .append(addColumn(minutesUntilArrival, "arrival"));
     $(tablebody).append(newRow);
 }
-
-function addColumn(value) { //called by addRow to populate cells
+/*called by addRow to populate cells 
+id is used as optional id attribute assignment */
+function addColumn(value, id) { 
     var newCol = $("<th>");
     $(newCol).attr("scope", "col").text(value);
+    if (id !== "") {
+        $(newCol).attr("id", id)
+    }
+
     return newCol;
 }
 
 function nextArrival(firstTrain, frequency) { //does the time calculations
     var nextTrainTime = moment(firstTrain, "HH:mm");
     checkValue = -1;
-    while (checkValue < 0) {
+    while (checkValue <= 0) {
         checkValue = moment(nextTrainTime).diff(moment(), "minutes");
-        if (checkValue < 0) {
+        if (checkValue <= 0) {
             nextTrainTime.add(Number(frequency), 'minutes');
         }
     }
@@ -80,13 +87,28 @@ function isMilitaryTime(time) { //called by validData to validate military time
         returnValue = false;
     } else if (time.charAt(2) !== ":") {
         returnValue = false;
-    } else if (isNaN(hours) || hours > 24 || hours < 0 ) {
+    } else if (isNaN(hours) || hours > 24 || hours < 0) {
         returnValue = false;
     } else if (isNaN(minutes) || minutes >= 60 || minutes < 0) {
         returnValue = false;
     }
     return returnValue;
 }
+
+//one minute timer to keep schedule updating 
+var gameTimer = setInterval(function () {
+
+    $("#tablebody tr").each(function () {
+        var timeVar = $(this).attr("data-firsttraintime")
+        var interval = Number($(this).attr("data-frequency"))
+        var calcResults = nextArrival(timeVar, interval);
+        var nextTrainTime = moment(calcResults[0]).format("hh:mm a");
+        var minutesUntilArrival = calcResults[1];
+        $(this).children("#traintime").text(nextTrainTime)
+        $(this).children("#arrival").text(minutesUntilArrival)
+    });
+}, 60000);
+
 // Call backs
 $("#submitbutton").click("click", function () {
     currentTrain.trainName = $("#trainname").val().trim();

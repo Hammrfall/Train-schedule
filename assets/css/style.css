@@ -25,6 +25,11 @@ body {
     padding: 10px;
 }
 
+#tabletitle {
+    height: 65px;
+    padding: 17px;
+}
+
 #inputheader {
     margin: 0;
     padding: 5px;
