@@ -117,6 +117,7 @@ $("#submitbutton").click("click", function () {
     currentTrain.frequency = $("#frequency").val().trim();
     if (validData(currentTrain)) {
         parentObject.push(currentTrain);
+        $(".form-control").val("")
     }
 });
 
